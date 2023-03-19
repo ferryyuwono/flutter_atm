@@ -10,13 +10,17 @@ void main() {
 
     test('when map LogoutInput, should return LogoutRequest', () async {
       // Given
-      const input = LogoutInput();
+      const input = LogoutInput(
+        username: 'mock',
+      );
 
       // When
       final result = logoutInputMapper.map(input);
 
       // Then
-      const expected = LogoutRequest();
+      const expected = LogoutRequest(
+        username: 'mock',
+      );
       expect(result, expected);
     });
 

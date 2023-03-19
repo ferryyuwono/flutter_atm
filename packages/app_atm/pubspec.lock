@@ -186,7 +186,7 @@ packages:
     source: hosted
     version: "1.17.0"
   common:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       path: "../common"
       relative: true
@@ -233,14 +233,14 @@ packages:
     source: hosted
     version: "1.1.0"
   data:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       path: "../data"
       relative: true
     source: path
     version: "0.0.1"
   data_account:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       path: "../data_account"
       relative: true
@@ -345,24 +345,8 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  format:
-    dependency: "direct main"
-    description:
-      name: format
-      sha256: cec3ceb18e615016713f485bf41c32a3278fd7a7ea66f0f235b9115be7c2dd97
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
-  freezed:
-    dependency: "direct dev"
-    description:
-      name: freezed
-      sha256: e819441678f1679b719008ff2ff0ef045d66eed9f9ec81166ca0d9b02a187454
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.2"
   freezed_annotation:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: freezed_annotation
       sha256: aeac15850ef1b38ee368d4c53ba9a847e900bb2c53a4db3f6881cbb3cb684338
@@ -440,14 +424,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
-  injectable_generator:
-    dependency: "direct dev"
-    description:
-      name: injectable_generator
-      sha256: b206de637c1960007b0beebe447a6ee3cf30c9e5f14542083024a9d0c49a7a09
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.4"
   intl:
     dependency: "direct main"
     description:
@@ -656,14 +632,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.2"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   rxdart:
     dependency: "direct main"
     description:

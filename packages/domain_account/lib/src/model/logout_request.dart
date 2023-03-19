@@ -4,5 +4,7 @@ part 'logout_request.freezed.dart';
 
 @freezed
 class LogoutRequest with _$LogoutRequest {
-  const factory LogoutRequest() = _LogoutRequest;
+  const factory LogoutRequest({
+    required String username,
+  }) = _LogoutRequest;
 }

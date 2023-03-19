@@ -20,14 +20,12 @@ class AccountRepositoryImpl implements AccountRepository {
     required LoginRequest request
   }) async {
     final response = await _accountService.getAccount(username: request.username);
-    if (response.id != null) {
-      loginAccount = _accountMapper.map(response);
-      return loginAccount;
+    final account = _accountMapper.map(response);
+    if (account.id > 0) {
+      loginAccount = account;
     }
 
-    final newAccount = await _accountService.addAccount(username: request.username);
-    loginAccount = _accountMapper.map(newAccount);
-    return loginAccount;
+    return account;
   }
 
   @override
@@ -37,8 +35,12 @@ class AccountRepositoryImpl implements AccountRepository {
   Future<Account> logout({
     required LogoutRequest request
   }) async {
-    final account = loginAccount;
-    loginAccount = const Account();
-    return account;
+    if (loginAccount.username == request.username) {
+      final account = loginAccount;
+      loginAccount = const Account();
+      return account;
+    }
+
+    return const Account();
   }
 }

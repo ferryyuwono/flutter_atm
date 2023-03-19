@@ -4,5 +4,7 @@ part 'logout_input.freezed.dart';
 
 @freezed
 class LogoutInput with _$LogoutInput {
-  const factory LogoutInput() = _LogoutInput;
+  const factory LogoutInput({
+    required String username,
+  }) = _LogoutInput;
 }
