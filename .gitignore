@@ -1,0 +1,11 @@
+**/pubspec_overrides.yaml
+.idea
+.fvm/flutter_sdk
+.dart_tool/
+**/lcov.info
+**/new_lcov.info
+**/*.config.dart
+**/*.freezed.dart
+**/*.g.dart
+**/*.gr.dart
+/build

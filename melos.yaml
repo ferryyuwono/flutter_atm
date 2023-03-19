@@ -1,0 +1,51 @@
+name: flutter_games_browser
+sdkPath: .fvm/flutter_sdk
+
+packages:
+  - packages/**
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
+scripts:
+  run_app:
+    run: melos exec -- flutter run
+
+  generate_l10n:
+    run: melos exec --dir-exists="lib/src/l10n" -- flutter gen-l10n .
+    description: Generate localizations in all packages
+
+  generate_runner:
+    run: melos exec -- flutter packages pub run build_runner build --delete-conflicting-outputs
+    description: run build_runner-based generators
+
+  generate:
+    run: melos run generate_l10n && melos run generate_runner
+
+  test:selective_unit_test:
+    run: melos exec --dir-exists="test" --fail-fast -- flutter test --coverage &&  melos exec -- lcov --remove 'coverage/lcov.info' 'lib/src/l10n/generated/*' 'lib/src/proto/generated/mokapos/model/items/*' -o coverage/lcov.info
+    description: Run Flutter tests for a specific package in this project.
+    select-package:
+      flutter: true
+      dir-exists: test
+
+  test:
+    run: melos run test:selective_unit_test --no-select
+    description: Run all Flutter tests in this project.  
+
+  analyze:
+    run: melos exec -- flutter analyze .
+    description: Run `dart analyze` in all packages.
+
+  combine_coverage:
+    run: melos run test && rm -rf ./coverage_report && melos exec -- "\$MELOS_ROOT_PATH/combine_coverage.sh"
+
+  coverage: melos run combine_coverage &&
+    genhtml coverage_report/lcov.info -o coverage_report/html
+
+  build: melos run analyze && melos run generate_coverage
+
+  postclean: >
+    melos exec -- \
+      rm -rf ./build ./android/.gradle ./ios/.symlinks ./ios/Pods ./android/.idea ./.idea ./.dart-tool/build ./lib/l10n/generated
