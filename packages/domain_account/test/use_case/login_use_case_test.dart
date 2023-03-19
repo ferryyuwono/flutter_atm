@@ -1,6 +1,7 @@
 import 'package:domain_account/domain_account.dart';
 import 'package:domain_account/src/use_case/mapper/login_input_mapper.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:format/format.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAccountRepository extends Mock implements AccountRepository {}
@@ -39,9 +40,13 @@ void main() {
       );
 
       // Then
-      const expected = LoginOutput(
+      final expected = LoginOutput(
         data: response,
         isSuccess: true,
+        messages: [
+          LoginUseCase.helloMessage.format(response.username),
+          LoginUseCase.balanceMessage.format(response.balance),
+        ],
       );
       expect(result, expected);
     });
@@ -61,7 +66,7 @@ void main() {
       const expected = LoginOutput(
         data: Account(),
         isSuccess: false,
-        errorMessage: LoginUseCase.doubleLoginError,
+        messages: [LoginUseCase.doubleLoginError],
       );
       expect(result, expected);
     });

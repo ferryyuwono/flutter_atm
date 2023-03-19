@@ -21,6 +21,40 @@ void main() {
       );
     });
 
+    test('when login is called and not found, should return data', () async {
+      // Given
+      const username = 'mock';
+      const request = LoginRequest(
+        username: username,
+      );
+
+      // When
+      when(
+        () => accountService.getAccount(username: username),
+      ).thenAnswer(
+        (_) => Future.value(const AccountData()),
+      );
+      when(
+        () => accountService.addAccount(username: username),
+      ).thenAnswer(
+        (_) => Future.value(const AccountData(
+          id: 1,
+          username: username,
+          balance: 0,
+        )),
+      );
+      final result = await accountRepository.login(
+        request: request
+      );
+
+      // Then
+      const expected = Account(
+        id: 1,
+        username: username,
+        balance: 0,
+      );
+      expect(result, expected);
+    });
     test('when login is called, should return data', () async {
       // Given
       const username = 'mock';

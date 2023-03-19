@@ -1,6 +1,7 @@
 import 'package:domain_account/domain_account.dart';
 import 'package:domain_account/src/use_case/mapper/logout_input_mapper.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:format/format.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAccountRepository extends Mock implements AccountRepository {}
@@ -39,9 +40,10 @@ void main() {
       );
 
       // Then
-      const expected = LogoutOutput(
+      final expected = LogoutOutput(
         account: account,
         isSuccess: true,
+        messages: [LogoutUseCase.goodbyeMessage.format(account.username)],
       );
       expect(result, expected);
     });
@@ -60,7 +62,7 @@ void main() {
       // Then
       const expected = LogoutOutput(
         isSuccess: false,
-        errorMessage: LogoutUseCase.authenticationError,
+        messages: [LogoutUseCase.authenticationError],
       );
       expect(result, expected);
     });
