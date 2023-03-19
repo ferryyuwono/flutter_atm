@@ -1,5 +1,6 @@
 import 'package:domain_account/domain_account.dart';
 import 'package:domain_account/src/use_case/mapper/login_input_mapper.dart';
+import 'package:format/format.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable()
@@ -8,6 +9,8 @@ class LoginUseCase {
   final LoginInputMapper _inputMapper;
 
   static const doubleLoginError = 'You have login as other user. please logout first';
+  static const helloMessage = 'Hello, {0}!';
+  static const balanceMessage = 'Your balance is \${0}!';
 
   LoginUseCase(
     this._repository,
@@ -18,7 +21,7 @@ class LoginUseCase {
     if (_repository.hasLogin()) {
       return const LoginOutput(
         isSuccess: false,
-        errorMessage: doubleLoginError,
+        messages: [doubleLoginError],
       );
     }
 
@@ -28,6 +31,10 @@ class LoginUseCase {
     return LoginOutput(
       data: data,
       isSuccess: true,
+      messages: [
+        helloMessage.format(data.username),
+        balanceMessage.format(data.balance),
+      ]
     );
   }
 }

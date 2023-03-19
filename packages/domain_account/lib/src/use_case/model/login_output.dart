@@ -10,6 +10,6 @@ class LoginOutput with _$LoginOutput {
   const factory LoginOutput({
     @Default(Account()) Account data,
     @Default(false) bool isSuccess,
-    @Default('') String errorMessage,
+    @Default([]) List<String> messages,
   }) = _LoginOutput;
 }

@@ -10,6 +10,7 @@ class IsLogoutCommandOutput with _$IsLogoutCommandOutput {
     @Default('') String command,
     @Default(false) bool isMatchCommand,
     @Default(false) bool isValidCommand,
+    @Default('') String username,
     @Default([]) List<String> messages,
   }) = _IsLogoutCommandOutput;
 }

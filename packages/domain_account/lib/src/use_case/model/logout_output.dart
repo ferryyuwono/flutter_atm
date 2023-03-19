@@ -10,6 +10,6 @@ class LogoutOutput with _$LogoutOutput {
   const factory LogoutOutput({
     @Default(Account()) Account account,
     @Default(false) bool isSuccess,
-    @Default('') String errorMessage,
+    @Default([]) List<String> messages,
   }) = _LogoutOutput;
 }

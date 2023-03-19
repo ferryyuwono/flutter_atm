@@ -1,5 +1,6 @@
 import 'package:domain_account/domain_account.dart';
 import 'package:domain_account/src/use_case/mapper/logout_input_mapper.dart';
+import 'package:format/format.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable()
@@ -8,6 +9,7 @@ class LogoutUseCase {
   final LogoutInputMapper _inputMapper;
 
   static const authenticationError = 'No user found. Please login first to execute command';
+  static const goodbyeMessage = 'Goodbye, {0}!';
 
   LogoutUseCase(
     this._repository,
@@ -18,7 +20,7 @@ class LogoutUseCase {
     if (!_repository.hasLogin()) {
       return const LogoutOutput(
         isSuccess: false,
-        errorMessage: authenticationError,
+        messages: [authenticationError],
       );
     }
 
@@ -29,6 +31,7 @@ class LogoutUseCase {
     return LogoutOutput(
       account: result,
       isSuccess: true,
+      messages: [goodbyeMessage.format(result.username)],
     );
   }
 }

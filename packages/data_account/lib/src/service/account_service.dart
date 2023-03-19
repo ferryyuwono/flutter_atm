@@ -37,8 +37,19 @@ class AccountService {
     required String username
   }) async {
     final accountList = await _getAccountList();
+    return _getAccount(
+      accountList: accountList,
+      username: username,
+    );
+  }
+
+  AccountData _getAccount({
+    required AccountListData accountList,
+    required String username
+  }) {
+    final lowerCaseUsername = username.toLowerCase();
     return accountList.accounts?.firstWhere(
-      (element) => element.username == username,
+      (element) => element.username?.toLowerCase() == lowerCaseUsername,
       orElse: () => const AccountData(),
     ) ?? const AccountData();
   }
@@ -47,10 +58,10 @@ class AccountService {
     required String username
   }) async {
     final accountList = await _getAccountList();
-    final existingAccount = accountList.accounts?.firstWhere(
-      (element) => element.username == username,
-      orElse: () => const AccountData(),
-    ) ?? const AccountData();
+    final existingAccount = _getAccount(
+      accountList: accountList,
+      username: username,
+    );
     if (existingAccount.id != null) {
       return existingAccount;
     }
