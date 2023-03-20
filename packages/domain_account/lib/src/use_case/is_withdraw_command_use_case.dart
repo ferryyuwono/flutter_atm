@@ -3,22 +3,23 @@ import 'package:format/format.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable()
-class IsLoginCommandUseCase {
-  IsLoginCommandUseCase();
+class IsWithdrawCommandUseCase {
+  IsWithdrawCommandUseCase();
 
-  static const matchCommand = "login";
+  static const matchCommand = "withdraw";
   static const unrecognizedCommand = 'Unrecognized command: {0}';
-  static const missingInputParameter = 'Please input login parameter';
-  static const tooMuchParameter = 'Login can only have 1 parameter';
+  static const missingInputParameter = 'Please input withdraw parameter';
+  static const tooMuchParameter = 'Withdraw can only have 1 parameter';
+  static const parameterNeedToBeDecimal = 'Withdraw amount can only be decimal number';
 
-  Future<IsLoginCommandOutput> execute(String command) async {
+  Future<IsWithdrawCommandOutput> execute(String command) async {
     final trimCommand = command.trim();
     final userCommand = '\$ $trimCommand';
     final parameters = trimCommand.split(' ');
 
     final isMatchCommand = trimCommand.startsWith(matchCommand);
     if (!isMatchCommand) {
-      return IsLoginCommandOutput(
+      return IsWithdrawCommandOutput(
         command: userCommand,
         isMatchCommand: isMatchCommand,
         isValidCommand: false,
@@ -27,7 +28,7 @@ class IsLoginCommandUseCase {
     }
 
     if (parameters.length == 1) {
-      return IsLoginCommandOutput(
+      return IsWithdrawCommandOutput(
         command: userCommand,
         isMatchCommand: isMatchCommand,
         isValidCommand: false,
@@ -36,7 +37,7 @@ class IsLoginCommandUseCase {
     }
 
     if (parameters.length > 2) {
-      return IsLoginCommandOutput(
+      return IsWithdrawCommandOutput(
         command: userCommand,
         isMatchCommand: isMatchCommand,
         isValidCommand: false,
@@ -44,11 +45,24 @@ class IsLoginCommandUseCase {
       );
     }
 
-    return IsLoginCommandOutput(
+    final parameter = parameters[1];
+    final int amount;
+    try {
+      amount = int.parse(parameter);
+    } catch (_) {
+      return IsWithdrawCommandOutput(
+        command: userCommand,
+        isMatchCommand: isMatchCommand,
+        isValidCommand: false,
+        messages: [parameterNeedToBeDecimal],
+      );
+    }
+
+    return IsWithdrawCommandOutput(
       command: userCommand,
       isMatchCommand: isMatchCommand,
       isValidCommand: true,
-      username: parameters[1],
+      amount: amount,
     );
   }
 }

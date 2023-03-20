@@ -41,7 +41,7 @@ void main() {
         isValidCommand: false,
         username: '',
         messages: [
-          IsLoginCommandUseCase.inputParameterCommand,
+          IsLoginCommandUseCase.missingInputParameter,
         ],
       );
       expect(result, expected);
@@ -60,7 +60,7 @@ void main() {
         isValidCommand: false,
         username: '',
         messages: [
-          IsLoginCommandUseCase.tooMuchParameterCommand,
+          IsLoginCommandUseCase.tooMuchParameter,
         ],
       );
       expect(result, expected);

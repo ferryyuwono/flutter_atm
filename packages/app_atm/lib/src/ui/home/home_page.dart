@@ -1,5 +1,6 @@
 import 'package:app_atm/app_atm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:format/format.dart';
 import 'package:get_it/get_it.dart';
@@ -18,6 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _textController = TextEditingController();
+  final _scrollController = ScrollController();
   late final HomeBloc homeBloc = GetIt.instance.get<HomeBloc>();
 
   @override
@@ -28,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _textController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -42,85 +45,104 @@ class _HomePageState extends State<HomePage> {
           title: const Text("ATM Simulation"),
         ),
         body: SafeArea(
-          child: BlocBuilder<HomeBloc, HomeState>(
-            buildWhen: (previous, current) => previous.logList.length != current.logList.length ||
-                previous.isLoading != current.isLoading,
-            builder: (context, state) {
-              return ListView.builder(
-                itemCount: state.logList.length,
-                itemBuilder: (context, index) => _LogItem(
-                  key: Key(HomePage.listLogItemKey.format(index)),
-                  command: state.logList[index],
+          child: Column(
+            children: [
+              Expanded(
+                child: BlocBuilder<HomeBloc, HomeState>(
+                  buildWhen: (previous, current) => previous.logList.length != current.logList.length ||
+                      previous.isLoading != current.isLoading,
+                  builder: (context, state) {
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                      _scrollController.animateTo(
+                        _scrollController.position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.fastOutSlowIn,
+                      );
+                    });
+
+                    return ListView.builder(
+                      controller: _scrollController,
+                      itemCount: state.logList.length,
+                      itemBuilder: (context, index) => _LogItem(
+                        key: Key(HomePage.listLogItemKey.format(index)),
+                        command: state.logList[index],
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _textController,
+                        onChanged: (value) => homeBloc.add(
+                          HomeTypeCommandEvent(command: value)
+                        ),
+                        onSubmitted: (value) {
+                          homeBloc.add(
+                            HomeSendCommandEvent(command: value)
+                          );
+                          _textController.clear();
+                        },
+                        textInputAction: TextInputAction.send,
+                        decoration: const InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.all(Radius.zero)
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                            borderRadius: BorderRadius.all(Radius.zero)
+                          ),
+                          hintText: 'Input command (login, deposit, withdraw, transfer, logout)',
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                          ),
+                        ),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    BlocBuilder<HomeBloc, HomeState>(
+                      buildWhen: (previous, current) => previous.typedCommand != current.typedCommand ||
+                          previous.isLoading != current.isLoading,
+                      builder: (context, state) => Padding(
+                        padding: const EdgeInsets.all(4),
+                        child:
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.lightBlue,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            padding: const EdgeInsets.all(8),
+                            onPressed: () {
+                              homeBloc.add(
+                                HomeSendCommandEvent(command: state.typedCommand)
+                              );
+                              _textController.clear();
+                            },
+                            icon: const Icon(Icons.send, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]
           ),
-        ),
-        bottomNavigationBar: BlocBuilder<HomeBloc, HomeState>(
-          buildWhen: (previous, current) => previous.typedCommand != current.typedCommand ||
-            previous.isLoading != current.isLoading,
-          builder: (context, state) => Padding(
-            padding: const EdgeInsets.all(4),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textController,
-                    onChanged: (value) => homeBloc.add(
-                      HomeTypeCommandEvent(command: value)
-                    ),
-                    onSubmitted: (value) {
-                      homeBloc.add(
-                        HomeSendCommandEvent(command: value)
-                      );
-                      _textController.clear();
-                    },
-                    textInputAction: TextInputAction.send,
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.zero)
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.all(Radius.zero)
-                      ),
-                      hintText: 'Input command (login, deposit, withdraw, transfer, logout)',
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Ink(
-                  decoration: const ShapeDecoration(
-                    color: Colors.lightBlue,
-                    shape: CircleBorder(),
-                  ),
-                  child: IconButton(
-                    padding: const EdgeInsets.all(8),
-                    onPressed: () {
-                      homeBloc.add(
-                        HomeSendCommandEvent(command: state.typedCommand)
-                      );
-                      _textController.clear();
-                    },
-                    icon: const Icon(Icons.send, color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          )
         ),
       ),
     );
@@ -138,10 +160,7 @@ class _LogItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 4,
-        vertical: 2,
-      ),
+      padding: const EdgeInsets.all(4),
       child: Text(
         command,
         style: const TextStyle(

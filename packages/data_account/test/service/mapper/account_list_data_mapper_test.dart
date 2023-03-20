@@ -1,6 +1,5 @@
 import 'package:data_account/data_account.dart';
 import 'package:data_account/src/service/mapper/account_list_data_mapper.dart';
-import 'package:data_account/src/service/model/account_list_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -17,12 +16,23 @@ void main() {
       final result = accountListDataMapper.mapToObject(response);
 
       // Then
-      final expected = AccountListData();
+      const expected = AccountListData();
       expect(result, expected);
     });
     test('when mapToObject with invalid array response, should return empty paged list', () async {
       // Given
-      const response = [];
+      const response = '[]';
+
+      // When
+      final result = accountListDataMapper.mapToObject(response);
+
+      // Then
+      const expected = AccountListData();
+      expect(result, expected);
+    });
+    test('when mapToObject with invalid string response, should return empty paged list', () async {
+      // Given
+      const response = 'asd';
 
       // When
       final result = accountListDataMapper.mapToObject(response);
@@ -33,7 +43,7 @@ void main() {
     });
     test('when mapToObject with invalid object response, should return empty paged list', () async {
       // Given
-      const response = {};
+      const response = '{}';
 
       // When
       final result = accountListDataMapper.mapToObject(response);
@@ -44,13 +54,7 @@ void main() {
     });
     test('when mapToObject with valid response, should return valid paged list', () async {
       // Given
-      const response = {
-        "accounts": [{
-          "id": 1,
-          "username": "mock",
-          "balance": 100
-        }],
-      };
+      const response = '{"accounts":[{"id":1,"username":"mock","balance":100}]}';
 
       // When
       final result = accountListDataMapper.mapToObject(response);
@@ -80,16 +84,10 @@ void main() {
       );
 
       // When
-      final result = accountListDataMapper.mapToJson(response);
+      final result = accountListDataMapper.mapToJsonString(response);
 
       // Then
-      const expected = {
-        "accounts": [{
-          "id": 1,
-          "username": "mock",
-          "balance": 100
-        }],
-      };
+      const expected = '{"accounts":[{"id":1,"username":"mock","balance":100}]}';
       expect(result, expected);
     });
 

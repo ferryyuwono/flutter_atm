@@ -1,7 +1,6 @@
 import 'package:data/data.dart';
 import 'package:data_account/data_account.dart';
 import 'package:data_account/src/service/mapper/account_list_data_mapper.dart';
-import 'package:data_account/src/service/model/account_list_data.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
@@ -79,5 +78,39 @@ class AccountService {
     await _setAccountList(newAccountList);
 
     return newAccount;
+  }
+
+  Future<AccountData> addBalance({
+    required String username,
+    required int amount,
+  }) async {
+    final accountList = await _getAccountList();
+    final account = _getAccount(
+      accountList: accountList,
+      username: username,
+    );
+    if (account.id == null) {
+      return const AccountData();
+    }
+
+    final updatedAccount = account.copyWith(
+      balance: (account.balance ?? 0) + amount,
+    );
+    await _updateAccount(accountList, updatedAccount);
+
+    return updatedAccount;
+  }
+
+  Future<void> _updateAccount(
+    AccountListData accountList,
+    AccountData account,
+  ) async {
+    final List<AccountData> accounts = accountList.accounts?.toList(growable: true) ?? [];
+    accounts.removeWhere((element) => element.id == account.id);
+
+    final AccountListData newAccountList = accountList.copyWith(
+        accounts: [...accounts, account ]
+    );
+    await _setAccountList(newAccountList);
   }
 }
