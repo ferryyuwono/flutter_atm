@@ -8,8 +8,5 @@ final GetIt getIt = GetIt.instance;
 
 @injectableInit
 Future<void> configureInjection() async {
-  getIt.registerSingleton<SharedPreferences>(
-    await SharedPreferences.getInstance()
-  );
   getIt.init();
 }

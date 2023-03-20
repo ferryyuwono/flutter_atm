@@ -252,7 +252,7 @@ void main() {
           balance: 0
         )),
       );
-      final result = accountRepository.getOrCreateAccount(username);
+      final result = await accountRepository.getOrCreateAccount(username);
 
       // Then
       expect(result, const Account(
@@ -286,7 +286,7 @@ void main() {
           balance: 0
         )),
       );
-      final result = accountRepository.getOrCreateAccount(username);
+      final result = await accountRepository.getOrCreateAccount(username);
 
       // Then
       expect(result, const Account(
