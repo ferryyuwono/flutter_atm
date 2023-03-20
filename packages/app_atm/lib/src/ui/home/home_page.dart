@@ -8,6 +8,8 @@ import 'package:get_it/get_it.dart';
 class HomePage extends StatefulWidget {
   static const String screenKey = 'screen.home';
   static const String listLogItemKey = 'screen.home.list.log.{0}';
+  static const String commandTextFieldKey = 'screen.home.textfield.command';
+  static const String sendButtonKey = 'screen.home.button.send';
 
   const HomePage() : super(key: const Key(HomePage.screenKey));
 
@@ -77,6 +79,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Expanded(
                       child: TextField(
+                        key: const Key(HomePage.commandTextFieldKey),
                         controller: _textController,
                         onChanged: (value) => homeBloc.add(
                           HomeTypeCommandEvent(command: value)
@@ -126,6 +129,7 @@ class _HomePageState extends State<HomePage> {
                             shape: CircleBorder(),
                           ),
                           child: IconButton(
+                            key: const Key(HomePage.sendButtonKey),
                             padding: const EdgeInsets.all(8),
                             onPressed: () {
                               homeBloc.add(
