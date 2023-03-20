@@ -1,4 +1,4 @@
 abstract class ObjectMapper<T> {
-  T mapToObject(dynamic json);
-  Map<String, dynamic> mapToJson(T object);
+  T mapToObject(String? jsonString);
+  String mapToJsonString(T object);
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:data/data.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -8,19 +10,25 @@ class MockData {
   MockData({
     this.number = 0
   });
+
+  String toJson() {
+    return '{ "number": $number }';
+  }
 }
 
 class MockDataMapper extends ObjectMapper<MockData> {
   @override
-  MockData mapToObject(json) {
+  MockData mapToObject(String? jsonString) {
+    const decoder = JsonDecoder();
+    final json = decoder.convert(jsonString ?? '{}');
     return json != null && json is Map<String, dynamic> ?
       MockData(number: json['number'] ?? 0) :
       MockData();
   }
 
   @override
-  Map<String, dynamic> mapToJson(object) {
-    return { 'number': object.number };
+  String mapToJsonString(object) {
+    return object.toJson();
   }
 }
 
@@ -34,10 +42,25 @@ void main() {
 
     setUp(() {});
 
-    test('when get object is called, should return object', () async {
+    test('when get object is called and null, should return object', () async {
       // Given
       const key = 'mock';
-      const data = "{ 'number': 1 }";
+
+      // When
+      when(() => preferences.getString(key)).thenReturn(null);
+      final result = await sharedPreferenceClient.getObject(
+          key: key,
+          mapper: mockDataMapper
+      );
+
+      // Expect
+      final expected = MockData();
+      expect(result.number, expected.number);
+    });
+    test('when get object is called and not null, should return object', () async {
+      // Given
+      const key = 'mock';
+      const data = '{ "number": 1 }';
 
       // When
       when(() => preferences.getString(key)).thenReturn(data);
@@ -48,16 +71,16 @@ void main() {
 
       // Expect
       final expected = MockData(number: 1);
-      expect(result, expected);
+      expect(result.number, expected.number);
     });
     test('when set object is called, should return true', () async {
       // Given
       const key = 'mock';
       final object = MockData(number: 1);
-      const objectJson = "{ 'number': 1 }";
+      const jsonString = '{ "number": 1 }';
 
       // When
-      when(() => preferences.setString(key, objectJson))
+      when(() => preferences.setString(key, jsonString))
         .thenAnswer((_) => Future.value(true));
       final result = await sharedPreferenceClient.setObject(
         key: key,
