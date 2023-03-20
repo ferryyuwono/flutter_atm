@@ -6,7 +6,7 @@ abstract class AccountRepository {
   });
 
   bool hasLogin();
-  Future<bool> hasAccount(String username);
+  Future<Account> getOrCreateAccount(String username);
   Account getLoginAccount();
 
   Future<Account> deposit({

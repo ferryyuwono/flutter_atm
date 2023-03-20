@@ -232,7 +232,7 @@ void main() {
       // Then
       expect(result, const Account());
     });
-    test('when hasAccount is called, should return false', () async {
+    test('when getOrCreateAccount is called and exists, should return account', () async {
       // Given
       final accountRepository = AccountRepositoryImpl(
         accountService,
@@ -240,12 +240,60 @@ void main() {
         debtCreditMapper,
         owedMapper,
       );
+      const username = 'mock';
 
       // When
-      final result = accountRepository.hasAccount('mock');
+      when(
+        () => accountService.getAccount(username: username),
+      ).thenAnswer(
+        (_) => Future.value(const AccountData(
+          id: 1,
+          username: username,
+          balance: 0
+        )),
+      );
+      final result = accountRepository.getOrCreateAccount(username);
 
       // Then
-      expect(result, false);
+      expect(result, const Account(
+        id: 1,
+        username: 'mock',
+        balance: 0
+      ));
+    });
+    test('when getOrCreateAccount is called and not found, should return account', () async {
+      // Given
+      final accountRepository = AccountRepositoryImpl(
+        accountService,
+        accountMapper,
+        debtCreditMapper,
+        owedMapper,
+      );
+      const username = 'mock';
+
+      // When
+      when(
+        () => accountService.getAccount(username: username),
+      ).thenAnswer(
+        (_) => Future.value(const AccountData()),
+      );
+      when(
+        () => accountService.addAccount(username: username),
+      ).thenAnswer(
+        (_) => Future.value(const AccountData(
+          id: 1,
+          username: username,
+          balance: 0
+        )),
+      );
+      final result = accountRepository.getOrCreateAccount(username);
+
+      // Then
+      expect(result, const Account(
+        id: 1,
+        username: 'mock',
+        balance: 0
+      ));
     });
     test('when updateOwed is called with empty owed, should return false', () async {
       // Given

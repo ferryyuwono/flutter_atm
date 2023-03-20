@@ -97,11 +97,16 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<bool> hasAccount(String username) async {
+  Future<Account> getOrCreateAccount(String username) async {
     final response = await _accountService.getAccount(
       username: username
     );
-    return response.id != null;
+    if (response.id != null) {
+      return _accountMapper.map(response);
+    }
+
+    final newAccount = await _accountService.addAccount(username: username);
+    return _accountMapper.map(newAccount);
   }
 
   @override

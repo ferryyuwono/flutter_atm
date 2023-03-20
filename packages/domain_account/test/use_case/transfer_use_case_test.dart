@@ -37,37 +37,6 @@ void main() {
       );
       expect(result, expected);
     });
-
-    test('when execute is called and user has login and transfer to not found, should return user not found data', () async {
-      // Given
-      const transferTo = 'mock2';
-      const amount = 100;
-      const account = Account(
-        id: 1,
-        username: 'mock',
-        balance: 100
-      );
-
-      // When
-      when(() => repository.getLoginAccount()).thenReturn(account);
-      when(() => repository.hasAccount(transferTo))
-        .thenAnswer((_) => Future.value(false));
-      final result = await transferUseCase.execute(
-        const TransferInput(
-          transferTo: transferTo,
-          amount: amount
-        )
-      );
-
-      // Then
-      final expected = TransferOutput(
-        isSuccess: false,
-        messages: [
-          TransferUseCase.userNotFound.format(transferTo),
-        ],
-      );
-      expect(result, expected);
-    });
     test('when execute is called and user has login and transfer to is found case 1, should return success data', () async {
       // Given
       const transferTo = 'mock2';
@@ -102,8 +71,8 @@ void main() {
 
       // When
       when(() => repository.getLoginAccount()).thenReturn(account);
-      when(() => repository.hasAccount(transferTo))
-        .thenAnswer((_) => Future.value(true));
+      when(() => repository.getOrCreateAccount(transferTo))
+        .thenAnswer((_) => Future.value(const Account()));
       when(() => repository.transfer(
         request: const TransferRequest(
           transferTo: transferTo,
@@ -189,8 +158,8 @@ void main() {
 
       // When
       when(() => repository.getLoginAccount()).thenReturn(account);
-      when(() => repository.hasAccount(transferTo))
-          .thenAnswer((_) => Future.value(true));
+      when(() => repository.getOrCreateAccount(transferTo))
+          .thenAnswer((_) => Future.value(const Account()));
       when(() => repository.transfer(
           request: const TransferRequest(
             transferTo: transferTo,

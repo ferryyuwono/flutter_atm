@@ -8,7 +8,6 @@ class TransferUseCase {
   final AccountRepository _repository;
   
   static const authenticationError = 'No user found. Please login first to execute command';
-  static const userNotFound = 'User {0} not found';
   static const transferredToAmountFound = 'Transferred \${0} to {1}';
   static const balanceMessage = 'Your balance is \${0}!';
   static const owedFromMessage = 'Owed \${0} from {1}';
@@ -27,14 +26,7 @@ class TransferUseCase {
       );
     }
 
-    final hasTransferToAccount = await _repository.hasAccount(input.transferTo);
-    if (!hasTransferToAccount) {
-      return TransferOutput(
-        isSuccess: false,
-        messages: [userNotFound.format(input.transferTo)],
-      );
-    }
-
+    await _repository.getOrCreateAccount(input.transferTo);
     final debtCredit = await _repository.getDebtCredit(
       request: GetDebtCreditRequest(username: account.username)
     );
