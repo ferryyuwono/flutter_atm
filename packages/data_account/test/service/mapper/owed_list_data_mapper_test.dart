@@ -1,10 +1,10 @@
 import 'package:data_account/data_account.dart';
-import 'package:data_account/src/service/mapper/account_list_data_mapper.dart';
+import 'package:data_account/src/service/mapper/owed_list_data_mapper.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('AccountListDataMapper', () {
-    final accountListDataMapper = AccountListDataMapper();
+  group('OwedListDataMapper', () {
+    final owedListDataMapper = OwedListDataMapper();
 
     setUp(() {});
 
@@ -13,10 +13,10 @@ void main() {
       const response = null;
 
       // When
-      final result = accountListDataMapper.mapToObject(response);
+      final result = owedListDataMapper.mapToObject(response);
 
       // Then
-      const expected = AccountListData();
+      const expected = OwedListData();
       expect(result, expected);
     });
     test('when mapToObject with invalid array response, should return empty list data', () async {
@@ -24,10 +24,10 @@ void main() {
       const response = '[]';
 
       // When
-      final result = accountListDataMapper.mapToObject(response);
+      final result = owedListDataMapper.mapToObject(response);
 
       // Then
-      const expected = AccountListData();
+      const expected = OwedListData();
       expect(result, expected);
     });
     test('when mapToObject with invalid string response, should return empty list data', () async {
@@ -35,10 +35,10 @@ void main() {
       const response = 'asd';
 
       // When
-      final result = accountListDataMapper.mapToObject(response);
+      final result = owedListDataMapper.mapToObject(response);
 
       // Then
-      const expected = AccountListData();
+      const expected = OwedListData();
       expect(result, expected);
     });
     test('when mapToObject with invalid object response, should return empty list data', () async {
@@ -46,26 +46,26 @@ void main() {
       const response = '{}';
 
       // When
-      final result = accountListDataMapper.mapToObject(response);
+      final result = owedListDataMapper.mapToObject(response);
 
       // Then
-      const expected = AccountListData();
+      const expected = OwedListData();
       expect(result, expected);
     });
     test('when mapToObject with valid response, should return valid list data', () async {
       // Given
-      const response = '{"accounts":[{"id":1,"username":"mock","balance":100}]}';
+      const response = '{"owed_list":[{"from":"mock","to":"mock2","amount":100}]}';
 
       // When
-      final result = accountListDataMapper.mapToObject(response);
+      final result = owedListDataMapper.mapToObject(response);
 
       // Then
-      const expected = AccountListData(
-        accounts: [
-          AccountData(
-            id: 1,
-            username: 'mock',
-            balance: 100
+      const expected = OwedListData(
+        owedList: [
+          OwedData(
+            from: 'mock',
+            to: 'mock2',
+            amount: 100,
           ),
         ],
       );
@@ -73,21 +73,21 @@ void main() {
     });
     test('when mapToJson, should return valid json', () async {
       // Given
-      const response = AccountListData(
-        accounts: [
-          AccountData(
-              id: 1,
-              username: 'mock',
-              balance: 100
+      const response = OwedListData(
+        owedList: [
+          OwedData(
+            from: 'mock',
+            to: 'mock2',
+            amount: 100,
           ),
         ],
       );
 
       // When
-      final result = accountListDataMapper.mapToJsonString(response);
+      final result = owedListDataMapper.mapToJsonString(response);
 
       // Then
-      const expected = '{"accounts":[{"id":1,"username":"mock","balance":100}]}';
+      const expected = '{"owed_list":[{"from":"mock","to":"mock2","amount":100}]}';
       expect(result, expected);
     });
 

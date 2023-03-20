@@ -1,7 +1,7 @@
 import 'package:data/data.dart';
 import 'package:data_account/data_account.dart';
 import 'package:data_account/src/service/mapper/account_list_data_mapper.dart';
-import 'package:data_account/src/service/model/account_list_data.dart';
+import 'package:data_account/src/service/mapper/owed_list_data_mapper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -12,11 +12,13 @@ void main() {
     late AccountService gameService;
     final sharedPreferenceClient = MockSharedPreferenceClient();
     final accountListDataMapper = AccountListDataMapper();
+    final owedListDataMapper = OwedListDataMapper();
 
     setUp(() {
       gameService = AccountService(
         sharedPreferenceClient,
         accountListDataMapper,
+        owedListDataMapper,
       );
     });
 
@@ -199,6 +201,26 @@ void main() {
 
       // Then
       expect(result, newAccount);
+    });
+    test('when getOwedList is called, should return data', () async {
+      // Given
+      const response = OwedListData(
+        owedList: [],
+      );
+
+      // When
+      when(
+        () => sharedPreferenceClient.getObject<OwedListData>(
+          key: AccountService.owedKey,
+          mapper: owedListDataMapper
+        ),
+      ).thenAnswer(
+        (_) => Future.value(response),
+      );
+      final result = await gameService.getOwedList();
+
+      // Then
+      expect(result, response);
     });
 
     tearDown(() {});

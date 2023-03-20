@@ -1,18 +1,22 @@
 import 'package:data/data.dart';
 import 'package:data_account/data_account.dart';
 import 'package:data_account/src/service/mapper/account_list_data_mapper.dart';
+import 'package:data_account/src/service/mapper/owed_list_data_mapper.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class AccountService {
   final SharedPreferenceClient _sharedPreferenceClient;
   final AccountListDataMapper _accountListDataMapper;
+  final OwedListDataMapper _owedListDataMapper;
 
   static const accountKey = 'preference.account';
+  static const owedKey = 'preference.owed';
 
   AccountService(
     this._sharedPreferenceClient,
     this._accountListDataMapper,
+    this._owedListDataMapper,
   );
 
   Future<AccountListData> _getAccountList() async {
@@ -112,5 +116,12 @@ class AccountService {
         accounts: [...accounts, account ]
     );
     await _setAccountList(newAccountList);
+  }
+
+  Future<OwedListData> getOwedList() async {
+    return _sharedPreferenceClient.getObject<OwedListData>(
+      key: owedKey,
+      mapper: _owedListDataMapper,
+    );
   }
 }

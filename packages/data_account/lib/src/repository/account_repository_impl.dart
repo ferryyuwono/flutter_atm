@@ -1,5 +1,6 @@
 import 'package:data_account/data_account.dart';
 import 'package:data_account/src/repository/mapper/account_mapper.dart';
+import 'package:data_account/src/repository/mapper/debt_credit_mapper.dart';
 import 'package:domain_account/domain_account.dart';
 import 'package:injectable/injectable.dart';
 
@@ -7,12 +8,14 @@ import 'package:injectable/injectable.dart';
 class AccountRepositoryImpl implements AccountRepository {
   final AccountService _accountService;
   final AccountMapper _accountMapper;
+  final DebtCreditMapper _debtCreditMapper;
 
   Account loginAccount = const Account();
 
   AccountRepositoryImpl(
     this._accountService,
     this._accountMapper,
+    this._debtCreditMapper,
   );
 
   @override
@@ -53,11 +56,19 @@ class AccountRepositoryImpl implements AccountRepository {
     required WithdrawRequest request
   }) async {
     final account = await _accountService.addBalance(
-        username: loginAccount.username,
-        amount: -request.amount
+      username: loginAccount.username,
+      amount: -request.amount
     );
     loginAccount = _accountMapper.map(account);
     return loginAccount;
+  }
+
+  @override
+  Future<DebtCredit> getDebtCredit({
+    required GetDebtCreditRequest request
+  }) async {
+    final response = await _accountService.getOwedList();
+    return _debtCreditMapper.map(response, request.username);
   }
 
   @override

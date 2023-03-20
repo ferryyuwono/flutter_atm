@@ -1,4 +1,5 @@
 import 'package:domain_account/domain_account.dart';
+import 'package:domain_account/src/model/get_debt_credit_request.dart';
 
 abstract class AccountRepository {
   Future<Account> login({
@@ -14,6 +15,10 @@ abstract class AccountRepository {
 
   Future<Account> withdraw({
     required WithdrawRequest request
+  });
+
+  Future<DebtCredit> getDebtCredit({
+    required GetDebtCreditRequest request
   });
 
   Future<Account> logout({

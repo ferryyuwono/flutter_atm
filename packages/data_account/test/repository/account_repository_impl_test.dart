@@ -1,6 +1,8 @@
 import 'package:data_account/data_account.dart';
 import 'package:data_account/src/repository/account_repository_impl.dart';
 import 'package:data_account/src/repository/mapper/account_mapper.dart';
+import 'package:data_account/src/repository/mapper/debt_credit_mapper.dart';
+import 'package:data_account/src/repository/mapper/owed_mapper.dart';
 import 'package:domain_account/domain_account.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -11,6 +13,7 @@ void main() {
   group('AccountRepositoryImpl', () {
     final accountService = MockAccountService();
     final accountMapper = AccountMapper();
+    final debtCreditMapper = DebtCreditMapper(OwedMapper());
 
     setUp(() {});
 
@@ -19,6 +22,7 @@ void main() {
       final accountRepository = AccountRepositoryImpl(
         accountService,
         accountMapper,
+        debtCreditMapper,
       );
       const username = 'mock';
       const request = LoginRequest(
@@ -57,6 +61,7 @@ void main() {
       final accountRepository = AccountRepositoryImpl(
         accountService,
         accountMapper,
+        debtCreditMapper,
       );
       const username = 'mock';
       const request = LoginRequest(
@@ -92,6 +97,7 @@ void main() {
       final accountRepository = AccountRepositoryImpl(
         accountService,
         accountMapper,
+        debtCreditMapper,
       );
 
       // When
@@ -100,11 +106,34 @@ void main() {
       // Then
       expect(result, false);
     });
+    test('when getDebtCredit is called, should return data', () async {
+      // Given
+      const username = 'mock';
+      final accountRepository = AccountRepositoryImpl(
+        accountService,
+        accountMapper,
+        debtCreditMapper,
+      );
+
+      // When
+      when(
+        () => accountService.getOwedList(),
+      ).thenAnswer(
+        (_) => Future.value(const OwedListData()),
+      );
+      final result = await accountRepository.getDebtCredit(
+        request: const GetDebtCreditRequest(username: username)
+      );
+
+      // Then
+      expect(result, const DebtCredit());
+    });
     test('when logout is called and has login, should return data', () async {
       // Given
       final accountRepository = AccountRepositoryImpl(
         accountService,
         accountMapper,
+        debtCreditMapper,
       );
 
       // When
@@ -113,7 +142,7 @@ void main() {
       );
 
       // Then
-      expect(result, Account());
+      expect(result, const Account());
     });
 
     tearDown(() {});
