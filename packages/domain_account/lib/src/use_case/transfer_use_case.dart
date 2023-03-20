@@ -8,7 +8,7 @@ class TransferUseCase {
   final AccountRepository _repository;
   
   static const authenticationError = 'No user found. Please login first to execute command';
-  static const transferredToAmountFound = 'Transferred \${0} to {1}';
+  static const transferredToAmount = 'Transferred \${0} to {1}';
   static const balanceMessage = 'Your balance is \${0}!';
   static const owedFromMessage = 'Owed \${0} from {1}';
   static const owedToMessage = 'Owed \${0} to {1}';
@@ -86,7 +86,7 @@ class TransferUseCase {
     );
 
     final messages = [
-      transferredToAmountFound.format(finalTransferAmount, input.transferTo),
+      transferredToAmount.format(finalTransferAmount, input.transferTo),
       balanceMessage.format(newAccount.balance),
       ...[credit.amount > 0 || newCredit.from.isNotEmpty ? owedFromMessage.format(newCredit.amount, newCredit.from) : null],
       ...[debt.amount > 0 || newDebt.to.isNotEmpty ? owedToMessage.format(newDebt.amount, newDebt.to) : null],

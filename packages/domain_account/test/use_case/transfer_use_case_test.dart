@@ -116,7 +116,7 @@ void main() {
         data: newAccount,
         isSuccess: true,
         messages: [
-          TransferUseCase.transferredToAmountFound.format(50, transferTo),
+          TransferUseCase.transferredToAmount.format(50, transferTo),
           TransferUseCase.balanceMessage.format(0),
           TransferUseCase.owedFromMessage.format(0, transferTo),
           TransferUseCase.owedToMessage.format(30, transferTo),
@@ -203,7 +203,7 @@ void main() {
         data: newAccount,
         isSuccess: true,
         messages: [
-          TransferUseCase.transferredToAmountFound.format(0, transferTo),
+          TransferUseCase.transferredToAmount.format(0, transferTo),
           TransferUseCase.balanceMessage.format(50),
           TransferUseCase.owedFromMessage.format(10, transferTo),
           TransferUseCase.owedToMessage.format(10, transferTo),
