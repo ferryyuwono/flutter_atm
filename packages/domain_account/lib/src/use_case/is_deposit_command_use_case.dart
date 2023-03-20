@@ -18,7 +18,7 @@ class IsDepositCommandUseCase {
     final userCommand = '\$ $trimCommand';
     final parameters = trimCommand.split(' ');
 
-    final isMatchCommand = trimCommand.startsWith(matchCommand);
+    final isMatchCommand = trimCommand.toLowerCase().startsWith(matchCommand);
     if (!isMatchCommand) {
       return IsDepositCommandOutput(
         command: userCommand,

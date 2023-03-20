@@ -9,13 +9,13 @@ class MockSharedPreferenceClient extends Mock implements SharedPreferenceClient 
 
 void main() {
   group('AccountService', () {
-    late AccountService gameService;
+    late AccountService accountService;
     final sharedPreferenceClient = MockSharedPreferenceClient();
     final accountListDataMapper = AccountListDataMapper();
     final owedListDataMapper = OwedListDataMapper();
 
     setUp(() {
-      gameService = AccountService(
+      accountService = AccountService(
         sharedPreferenceClient,
         accountListDataMapper,
         owedListDataMapper,
@@ -38,7 +38,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(response),
       );
-      final result = await gameService.getAccount(
+      final result = await accountService.getAccount(
         username: username
       );
 
@@ -60,7 +60,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(response),
       );
-      final result = await gameService.getAccount(
+      final result = await accountService.getAccount(
         username: username
       );
 
@@ -89,7 +89,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(response),
       );
-      final result = await gameService.getAccount(
+      final result = await accountService.getAccount(
         username: username
       );
 
@@ -117,7 +117,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(response),
       );
-      final result = await gameService.addAccount(
+      final result = await accountService.addAccount(
         username: username
       );
 
@@ -155,7 +155,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(true),
       );
-      final result = await gameService.addAccount(
+      final result = await accountService.addAccount(
         username: username
       );
 
@@ -195,7 +195,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(true),
       );
-      final result = await gameService.addAccount(
+      final result = await accountService.addAccount(
         username: username
       );
 
@@ -218,7 +218,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(response),
       );
-      final result = await gameService.addBalance(
+      final result = await accountService.addBalance(
         username: username,
         amount: 100,
       );
@@ -263,7 +263,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(true),
       );
-      final result = await gameService.addBalance(
+      final result = await accountService.addBalance(
         username: username,
         amount: 100,
       );
@@ -286,7 +286,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(response),
       );
-      final result = await gameService.getOwedList();
+      final result = await accountService.getOwedList();
 
       // Then
       expect(result, response);
@@ -323,7 +323,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(true),
       );
-      final result = await gameService.updateOwed(owed);
+      final result = await accountService.updateOwed(owed);
 
       // Then
       expect(result, true);
@@ -360,7 +360,7 @@ void main() {
       ).thenAnswer(
         (_) => Future.value(true),
       );
-      final result = await gameService.updateOwed(owed);
+      final result = await accountService.updateOwed(owed);
 
       // Then
       expect(result, true);
