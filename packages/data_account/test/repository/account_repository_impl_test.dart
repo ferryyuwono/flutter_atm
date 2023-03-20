@@ -411,6 +411,21 @@ void main() {
         balance: 0,
       ));
     });
+    test('when getLoginAccount is called, should return account', () async {
+      // Given
+      final accountRepository = AccountRepositoryImpl(
+        accountService,
+        accountMapper,
+        debtCreditMapper,
+        owedMapper,
+      );
+
+      // When
+      final result = accountRepository.getLoginAccount();
+
+      // Then
+      expect(result, const Account());
+    });
 
     tearDown(() {});
   });

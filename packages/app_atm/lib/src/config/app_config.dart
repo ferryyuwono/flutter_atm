@@ -17,7 +17,7 @@ class AppConfig extends ApplicationConfig {
   Future<bool> config() async {
     await di.configureInjection();
     di.getIt.registerSingleton<SharedPreferences>(
-        await SharedPreferences.getInstance()
+      await SharedPreferences.getInstance()
     );
     di.getIt.registerSingleton<AppRouter>(AppRouter());
     return Future.value(true);

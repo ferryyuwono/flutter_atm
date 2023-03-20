@@ -84,13 +84,7 @@ class _HomePageState extends State<HomePage> {
                         onChanged: (value) => homeBloc.add(
                           HomeTypeCommandEvent(command: value)
                         ),
-                        onSubmitted: (value) {
-                          homeBloc.add(
-                            HomeSendCommandEvent(command: value)
-                          );
-                          _textController.clear();
-                        },
-                        textInputAction: TextInputAction.send,
+                        textInputAction: TextInputAction.done,
                         decoration: const InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
@@ -118,8 +112,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(width: 10),
                     BlocBuilder<HomeBloc, HomeState>(
-                      buildWhen: (previous, current) => previous.typedCommand != current.typedCommand ||
-                          previous.isLoading != current.isLoading,
+                      buildWhen: (previous, current) => previous.typedCommand != current.typedCommand,
                       builder: (context, state) => Padding(
                         padding: const EdgeInsets.all(4),
                         child:

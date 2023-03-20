@@ -202,6 +202,75 @@ void main() {
       // Then
       expect(result, newAccount);
     });
+    test('when addBalance is called and not found, should return empty data', () async {
+      // Given
+      const username = 'mock';
+      const response = AccountListData(
+        accounts: [],
+      );
+
+      // When
+      when(
+        () => sharedPreferenceClient.getObject<AccountListData>(
+          key: AccountService.accountKey,
+          mapper: accountListDataMapper
+        ),
+      ).thenAnswer(
+        (_) => Future.value(response),
+      );
+      final result = await gameService.addBalance(
+        username: username,
+        amount: 100,
+      );
+
+      // Then
+      expect(result, const AccountData());
+    });
+    test('when addBalance is called and found, should return data', () async {
+      // Given
+      const username = 'mock';
+      const account = AccountData(
+        id: 1,
+        username: username,
+        balance: 0,
+      );
+      const response = AccountListData(
+        accounts: [account],
+      );
+      final newAccount = account.copyWith(
+        balance: 100,
+      );
+      final newResponse = AccountListData(
+        accounts: [newAccount],
+      );
+
+      // When
+      when(
+        () => sharedPreferenceClient.getObject<AccountListData>(
+          key: AccountService.accountKey,
+          mapper: accountListDataMapper
+        ),
+      ).thenAnswer(
+        (_) => Future.value(response),
+      );
+
+      when(
+        () => sharedPreferenceClient.setObject<AccountListData>(
+          key: AccountService.accountKey,
+          object: newResponse,
+          mapper: accountListDataMapper
+        ),
+      ).thenAnswer(
+        (_) => Future.value(true),
+      );
+      final result = await gameService.addBalance(
+        username: username,
+        amount: 100,
+      );
+
+      // Then
+      expect(result, newAccount);
+    });
     test('when getOwedList is called, should return data', () async {
       // Given
       const response = OwedListData(
@@ -261,18 +330,16 @@ void main() {
     });
     test('when updateOwed is called and owed amount is greater than zero, should return data', () async {
       // Given
-      const response = OwedListData(
-        owedList: [],
-      );
       const owed = OwedData(
-        from: 'mock',
-        to: 'mock2',
-        amount: 100
+          from: 'mock',
+          to: 'mock2',
+          amount: 100
+      );
+      const response = OwedListData(
+        owedList: [owed],
       );
       const newResponse = OwedListData(
-        owedList: [
-          owed
-        ],
+        owedList: [owed],
       );
 
       // When
