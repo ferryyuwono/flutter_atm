@@ -186,7 +186,7 @@ packages:
     source: hosted
     version: "1.17.0"
   common:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       path: "../common"
       relative: true
@@ -233,14 +233,14 @@ packages:
     source: hosted
     version: "1.1.0"
   data:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       path: "../data"
       relative: true
     source: path
     version: "0.0.1"
   data_account:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       path: "../data_account"
       relative: true

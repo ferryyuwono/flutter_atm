@@ -117,7 +117,7 @@ class HomeBlocImpl extends HomeBloc {
     ));
     await _logout(
       emit: emit,
-      request: LogoutInput(username: output.username),
+      request: const LogoutInput(),
     );
   }
 

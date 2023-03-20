@@ -37,12 +37,8 @@ class AccountRepositoryImpl implements AccountRepository {
   Future<Account> logout({
     required LogoutRequest request
   }) async {
-    if (loginAccount.username == request.username) {
-      final account = loginAccount;
-      loginAccount = const Account();
-      return account;
-    }
-
-    return const Account();
+    final account = loginAccount;
+    loginAccount = const Account();
+    return account;
   }
 }

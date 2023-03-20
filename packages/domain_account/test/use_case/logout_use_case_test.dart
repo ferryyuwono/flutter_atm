@@ -20,9 +20,7 @@ void main() {
     test('when execute is called and user has login, should return correct data', () async {
       // Given
       const username = 'mock';
-      const request = LogoutRequest(
-        username: username
-      );
+      const request = LogoutRequest();
       const account = Account(
         id: 1,
         username: username,
@@ -34,9 +32,7 @@ void main() {
       when(() => repository.logout(request: request))
           .thenAnswer((_) => Future.value(account));
       final result = await logoutUseCase.execute(
-        const LogoutInput(
-          username: username
-        )
+        const LogoutInput()
       );
 
       // Then
@@ -48,15 +44,10 @@ void main() {
       expect(result, expected);
     });
     test('when execute is called and user has not login, should return failed data', () async {
-      // Given
-      const username = 'mock';
-
       // When
       when(() => repository.hasLogin()).thenReturn(false);
       final result = await logoutUseCase.execute(
-        const LogoutInput(
-          username: username
-        )
+        const LogoutInput()
       );
 
       // Then

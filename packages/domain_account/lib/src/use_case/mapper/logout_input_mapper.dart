@@ -6,8 +6,6 @@ class LogoutInputMapper {
   LogoutInputMapper();
 
   LogoutRequest map(LogoutInput data) {
-    return LogoutRequest(
-      username: data.username,
-    );
+    return LogoutRequest();
   }
 }
