@@ -9,8 +9,9 @@ class IsWithdrawCommandUseCase {
   static const matchCommand = "withdraw";
   static const unrecognizedCommand = 'Unrecognized command: {0}';
   static const missingInputParameter = 'Please input withdraw parameter';
-  static const tooMuchParameter = 'Withdraw can only have 1 parameter';
+  static const tooMuchParameter = 'Withdraw can only have 1 parameter: \$withdraw [amount]';
   static const parameterNeedToBeDecimal = 'Withdraw amount can only be decimal number';
+  static const amountBiggerThanZero = 'Withdraw amount need to be bigger than 0';
 
   Future<IsWithdrawCommandOutput> execute(String command) async {
     final trimCommand = command.trim();
@@ -55,6 +56,15 @@ class IsWithdrawCommandUseCase {
         isMatchCommand: isMatchCommand,
         isValidCommand: false,
         messages: [parameterNeedToBeDecimal],
+      );
+    }
+
+    if (amount <= 0) {
+      return IsWithdrawCommandOutput(
+        command: userCommand,
+        isMatchCommand: isMatchCommand,
+        isValidCommand: false,
+        messages: [amountBiggerThanZero],
       );
     }
 

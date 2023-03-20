@@ -1,5 +1,7 @@
 import 'package:data_account/data_account.dart';
 import 'package:data_account/src/repository/mapper/account_mapper.dart';
+import 'package:data_account/src/repository/mapper/debt_credit_mapper.dart';
+import 'package:data_account/src/repository/mapper/owed_mapper.dart';
 import 'package:domain_account/domain_account.dart';
 import 'package:injectable/injectable.dart';
 
@@ -7,12 +9,16 @@ import 'package:injectable/injectable.dart';
 class AccountRepositoryImpl implements AccountRepository {
   final AccountService _accountService;
   final AccountMapper _accountMapper;
+  final DebtCreditMapper _debtCreditMapper;
+  final OwedMapper _owedMapper;
 
   Account loginAccount = const Account();
 
   AccountRepositoryImpl(
     this._accountService,
     this._accountMapper,
+    this._debtCreditMapper,
+    this._owedMapper,
   );
 
   @override
@@ -53,11 +59,32 @@ class AccountRepositoryImpl implements AccountRepository {
     required WithdrawRequest request
   }) async {
     final account = await _accountService.addBalance(
-        username: loginAccount.username,
-        amount: -request.amount
+      username: loginAccount.username,
+      amount: -request.amount
     );
     loginAccount = _accountMapper.map(account);
     return loginAccount;
+  }
+
+  @override
+  Future<DebtCredit> getDebtCredit({
+    required GetDebtCreditRequest request
+  }) async {
+    final response = await _accountService.getOwedList();
+    return _debtCreditMapper.map(response, request.username);
+  }
+
+  @override
+  Future<bool> updateOwed({
+    required Owed owed
+  }) async {
+    if (owed.from.isEmpty) {
+      return false;
+    }
+
+    return await _accountService.updateOwed(
+      _owedMapper.mapToData(owed)
+    );
   }
 
   @override
@@ -67,5 +94,34 @@ class AccountRepositoryImpl implements AccountRepository {
     final account = loginAccount;
     loginAccount = const Account();
     return account;
+  }
+
+  @override
+  Future<Account> getOrCreateAccount(String username) async {
+    final response = await _accountService.getAccount(
+      username: username
+    );
+    if (response.id != null) {
+      return _accountMapper.map(response);
+    }
+
+    final newAccount = await _accountService.addAccount(username: username);
+    return _accountMapper.map(newAccount);
+  }
+
+  @override
+  Future<Account> transfer({
+    required TransferRequest request
+  }) async {
+    if (request.amount == 0) {
+      return loginAccount;
+    }
+
+    await withdraw(request: WithdrawRequest(amount: request.amount));
+    await _accountService.addBalance(
+      username: request.transferTo,
+      amount: request.amount
+    );
+    return loginAccount;
   }
 }

@@ -8,7 +8,7 @@ void main() {
 
     setUp(() {});
 
-    test('when mapToObject with null response, should return empty paged list', () async {
+    test('when mapToObject with null response, should return empty list data', () async {
       // Given
       const response = null;
 
@@ -19,7 +19,7 @@ void main() {
       const expected = AccountListData();
       expect(result, expected);
     });
-    test('when mapToObject with invalid array response, should return empty paged list', () async {
+    test('when mapToObject with invalid array response, should return empty list data', () async {
       // Given
       const response = '[]';
 
@@ -30,7 +30,7 @@ void main() {
       const expected = AccountListData();
       expect(result, expected);
     });
-    test('when mapToObject with invalid string response, should return empty paged list', () async {
+    test('when mapToObject with invalid string response, should return empty list data', () async {
       // Given
       const response = 'asd';
 
@@ -41,7 +41,7 @@ void main() {
       const expected = AccountListData();
       expect(result, expected);
     });
-    test('when mapToObject with invalid object response, should return empty paged list', () async {
+    test('when mapToObject with invalid object response, should return empty list data', () async {
       // Given
       const response = '{}';
 
@@ -52,7 +52,7 @@ void main() {
       const expected = AccountListData();
       expect(result, expected);
     });
-    test('when mapToObject with valid response, should return valid paged list', () async {
+    test('when mapToObject with valid response, should return valid list data', () async {
       // Given
       const response = '{"accounts":[{"id":1,"username":"mock","balance":100}]}';
 

@@ -9,6 +9,7 @@ class LoginOutput with _$LoginOutput {
 
   const factory LoginOutput({
     @Default(Account()) Account data,
+    @Default(DebtCredit()) DebtCredit debtCredit,
     @Default(false) bool isSuccess,
     @Default([]) List<String> messages,
   }) = _LoginOutput;

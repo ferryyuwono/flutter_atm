@@ -14,7 +14,8 @@ void main() {
     test('when init is called, should call app config init', () async {
       // Given
       when(() => appConfig.init())
-        .thenAnswer((_) async => Future.value(true));
+        .thenAnswer((_) async => Future.value(true)
+      );
 
       // When
       final result = await appInitializer.init();

@@ -15,20 +15,24 @@ class HomeBlocImpl extends HomeBloc {
   final LogoutUseCase _logoutUseCase;
   final DepositUseCase _depositUseCase;
   final WithdrawUseCase _withdrawUseCase;
+  final TransferUseCase _transferUseCase;
   final IsLoginCommandUseCase _isLoginCommandUseCase;
   final IsLogoutCommandUseCase _isLogoutCommandUseCase;
   final IsDepositCommandUseCase _isDepositCommandUseCase;
   final IsWithdrawCommandUseCase _isWithdrawCommandUseCase;
+  final IsTransferCommandUseCase _isTransferCommandUseCase;
 
   HomeBlocImpl(
     this._loginUseCase,
     this._logoutUseCase,
     this._depositUseCase,
     this._withdrawUseCase,
+    this._transferUseCase,
     this._isLoginCommandUseCase,
     this._isLogoutCommandUseCase,
     this._isDepositCommandUseCase,
     this._isWithdrawCommandUseCase,
+    this._isTransferCommandUseCase,
   ) : super(HomeState()) {
     on<HomeTypeCommandEvent>(
       _onHomeTypeCommandEvent,
@@ -65,6 +69,12 @@ class HomeBlocImpl extends HomeBloc {
     final isWithdrawCommandOutput = await _isWithdrawCommandUseCase.execute(event.command);
     if (isWithdrawCommandOutput.isMatchCommand) {
       await _handleWithdrawCommand(emit: emit, output: isWithdrawCommandOutput);
+      return;
+    }
+
+    final isTransferCommandOutput = await _isTransferCommandUseCase.execute(event.command);
+    if (isTransferCommandOutput.isMatchCommand) {
+      await _handleTransferCommand(emit: emit, output: isTransferCommandOutput);
       return;
     }
 
@@ -214,6 +224,39 @@ class HomeBlocImpl extends HomeBloc {
     required WithdrawInput request,
   }) async {
     final output = await _withdrawUseCase.execute(request);
+    emit(state.copyWith(
+      logList: [...state.logList, ...output.messages],
+      isLoading: false,
+    ));
+  }
+  Future<void> _handleTransferCommand({
+    required Emitter<HomeState> emit,
+    required IsTransferCommandOutput output,
+  }) async {
+    if (!output.isValidCommand) {
+      emit(state.copyWith(
+        typedCommand: '',
+        logList: [...state.logList, output.command, ...output.messages],
+      ));
+      return;
+    }
+
+    emit(state.copyWith(
+      typedCommand: '',
+      logList: [...state.logList, output.command],
+      isLoading: true,
+    ));
+    await _transfer(
+      emit: emit,
+      request: TransferInput(transferTo: output.transferTo, amount: output.amount),
+    );
+  }
+
+  Future<void> _transfer({
+    required Emitter<HomeState> emit,
+    required TransferInput request,
+  }) async {
+    final output = await _transferUseCase.execute(request);
     emit(state.copyWith(
       logList: [...state.logList, ...output.messages],
       isLoading: false,

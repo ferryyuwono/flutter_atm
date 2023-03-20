@@ -84,6 +84,25 @@ void main() {
       );
       expect(result, expected);
     });
+    test('when execute is called and deposit amount is less or same as zero, should return amount need greater than zero data', () async {
+      // Given
+      const command = 'withdraw -100';
+
+      // When
+      final result = await isWithdrawCommandUseCase.execute(command);
+
+      // Then
+      const expected = IsWithdrawCommandOutput(
+        isMatchCommand: true,
+        command: '\$ $command',
+        isValidCommand: false,
+        amount: 0,
+        messages: [
+          IsWithdrawCommandUseCase.amountBiggerThanZero,
+        ],
+      );
+      expect(result, expected);
+    });
     test('when execute is called and valid, should return valid data', () async {
       // Given
       const command = 'withdraw 100';

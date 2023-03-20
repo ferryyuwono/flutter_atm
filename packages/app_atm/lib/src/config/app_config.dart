@@ -1,5 +1,6 @@
 import 'package:app_atm/app_atm.dart';
 import 'package:initializer/initializer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../di/di.dart' as di;
 
@@ -15,6 +16,9 @@ class AppConfig extends ApplicationConfig {
   @override
   Future<bool> config() async {
     await di.configureInjection();
+    di.getIt.registerSingleton<SharedPreferences>(
+      await SharedPreferences.getInstance()
+    );
     di.getIt.registerSingleton<AppRouter>(AppRouter());
     return Future.value(true);
   }

@@ -2,7 +2,12 @@ name: flutter_games_browser
 sdkPath: .fvm/flutter_sdk
 
 packages:
-  - packages/**
+  - packages/common
+  - packages/data
+  - packages/domain_account
+  - packages/data_account
+  - packages/initializer
+  - packages/app_atm
 
 command:
   bootstrap:

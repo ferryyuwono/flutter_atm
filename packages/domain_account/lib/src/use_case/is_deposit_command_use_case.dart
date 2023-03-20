@@ -9,8 +9,9 @@ class IsDepositCommandUseCase {
   static const matchCommand = "deposit";
   static const unrecognizedCommand = 'Unrecognized command: {0}';
   static const missingInputParameter = 'Please input deposit parameter';
-  static const tooMuchParameter = 'Deposit can only have 1 parameter';
+  static const tooMuchParameter = 'Deposit can only have 1 parameter: \$transfer [amount]';
   static const parameterNeedToBeDecimal = 'Deposit amount can only be decimal number';
+  static const amountBiggerThanZero = 'Deposit amount need to be bigger than 0';
 
   Future<IsDepositCommandOutput> execute(String command) async {
     final trimCommand = command.trim();
@@ -55,6 +56,15 @@ class IsDepositCommandUseCase {
         isMatchCommand: isMatchCommand,
         isValidCommand: false,
         messages: [parameterNeedToBeDecimal],
+      );
+    }
+
+    if (amount <= 0) {
+      return IsDepositCommandOutput(
+        command: userCommand,
+        isMatchCommand: isMatchCommand,
+        isValidCommand: false,
+        messages: [amountBiggerThanZero],
       );
     }
 

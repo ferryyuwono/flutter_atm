@@ -8,6 +8,8 @@ import 'package:get_it/get_it.dart';
 class HomePage extends StatefulWidget {
   static const String screenKey = 'screen.home';
   static const String listLogItemKey = 'screen.home.list.log.{0}';
+  static const String commandTextFieldKey = 'screen.home.textfield.command';
+  static const String sendButtonKey = 'screen.home.button.send';
 
   const HomePage() : super(key: const Key(HomePage.screenKey));
 
@@ -77,17 +79,12 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Expanded(
                       child: TextField(
+                        key: const Key(HomePage.commandTextFieldKey),
                         controller: _textController,
                         onChanged: (value) => homeBloc.add(
                           HomeTypeCommandEvent(command: value)
                         ),
-                        onSubmitted: (value) {
-                          homeBloc.add(
-                            HomeSendCommandEvent(command: value)
-                          );
-                          _textController.clear();
-                        },
-                        textInputAction: TextInputAction.send,
+                        textInputAction: TextInputAction.done,
                         decoration: const InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
@@ -115,8 +112,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(width: 10),
                     BlocBuilder<HomeBloc, HomeState>(
-                      buildWhen: (previous, current) => previous.typedCommand != current.typedCommand ||
-                          previous.isLoading != current.isLoading,
+                      buildWhen: (previous, current) => previous.typedCommand != current.typedCommand,
                       builder: (context, state) => Padding(
                         padding: const EdgeInsets.all(4),
                         child:
@@ -126,6 +122,7 @@ class _HomePageState extends State<HomePage> {
                             shape: CircleBorder(),
                           ),
                           child: IconButton(
+                            key: const Key(HomePage.sendButtonKey),
                             padding: const EdgeInsets.all(8),
                             onPressed: () {
                               homeBloc.add(
