@@ -68,9 +68,13 @@ class TransferUseCase {
     ) ?? const Owed();
 
     Owed newDebt = const Owed();
-    newDebt = debt.copyWith(
-      amount: debt.amount + nextDebtAmount,
-    );
+    if (debt.amount + nextDebtAmount > 0) {
+      newDebt = debt.copyWith(
+        from: account.username,
+        to: input.transferTo,
+        amount: debt.amount + nextDebtAmount,
+      );
+    }
     await _repository.updateOwed(owed: newDebt);
 
     // Transfer
@@ -81,15 +85,17 @@ class TransferUseCase {
       )
     );
 
+    final messages = [
+      transferredToAmountFound.format(finalTransferAmount, input.transferTo),
+      balanceMessage.format(newAccount.balance),
+      ...[credit.amount > 0 || newCredit.from.isNotEmpty ? owedFromMessage.format(newCredit.amount, newCredit.from) : null],
+      ...[debt.amount > 0 || newDebt.to.isNotEmpty ? owedToMessage.format(newDebt.amount, newDebt.to) : null],
+    ];
+
     return TransferOutput(
       data: newAccount,
       isSuccess: true,
-      messages: [
-        transferredToAmountFound.format(finalTransferAmount, input.transferTo),
-        balanceMessage.format(newAccount.balance),
-        ...[credit.amount > 0 || newCredit.from.isNotEmpty ? owedFromMessage.format(newCredit.amount, newCredit.from) : ''],
-        ...[debt.amount > 0 || newDebt.to.isNotEmpty ? owedToMessage.format(newDebt.amount, newDebt.to) : ''],
-      ]
+      messages: messages.whereType<String>().toList(),
     );
   }
 }
