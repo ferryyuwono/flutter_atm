@@ -28,6 +28,25 @@ void main() {
       );
       expect(result, expected);
     });
+    test('when mapToData is called, should return data', () async {
+      // Given
+      const response = Owed(
+        from: 'mock',
+        to: 'mock2',
+        amount: 100,
+      );
+
+      // When
+      final result = owedMapper.mapToData(response);
+
+      // Then
+      const expected = OwedData(
+        from: 'mock',
+        to: 'mock2',
+        amount: 100,
+      );
+      expect(result, expected);
+    });
 
     tearDown(() {});
   });

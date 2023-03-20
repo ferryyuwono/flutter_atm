@@ -13,4 +13,12 @@ class OwedMapper {
       amount: data.amount ?? 0,
     );
   }
+
+  OwedData mapToData(Owed data) {
+    return OwedData(
+      from: data.from,
+      to: data.to,
+      amount: data.amount,
+    );
+  }
 }

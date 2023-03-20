@@ -222,6 +222,82 @@ void main() {
       // Then
       expect(result, response);
     });
+    test('when updateOwed is called and owed amount is zero, should return data', () async {
+      // Given
+      const response = OwedListData(
+        owedList: [],
+      );
+      const owed = OwedData(
+        from: 'mock',
+        to: 'mock2',
+        amount: 0
+      );
+      const newResponse = OwedListData(
+        owedList: [],
+      );
+
+      // When
+      when(
+        () => sharedPreferenceClient.getObject<OwedListData>(
+          key: AccountService.owedKey,
+          mapper: owedListDataMapper
+        ),
+      ).thenAnswer(
+        (_) => Future.value(response),
+      );
+      when(
+        () => sharedPreferenceClient.setObject<OwedListData>(
+          key: AccountService.owedKey,
+          object: newResponse,
+          mapper: owedListDataMapper
+        ),
+      ).thenAnswer(
+        (_) => Future.value(true),
+      );
+      final result = await gameService.updateOwed(owed);
+
+      // Then
+      expect(result, true);
+    });
+    test('when updateOwed is called and owed amount is greater than zero, should return data', () async {
+      // Given
+      const response = OwedListData(
+        owedList: [],
+      );
+      const owed = OwedData(
+        from: 'mock',
+        to: 'mock2',
+        amount: 100
+      );
+      const newResponse = OwedListData(
+        owedList: [
+          owed
+        ],
+      );
+
+      // When
+      when(
+        () => sharedPreferenceClient.getObject<OwedListData>(
+          key: AccountService.owedKey,
+          mapper: owedListDataMapper
+        ),
+      ).thenAnswer(
+        (_) => Future.value(response),
+      );
+      when(
+        () => sharedPreferenceClient.setObject<OwedListData>(
+          key: AccountService.owedKey,
+          object: newResponse,
+          mapper: owedListDataMapper
+        ),
+      ).thenAnswer(
+        (_) => Future.value(true),
+      );
+      final result = await gameService.updateOwed(owed);
+
+      // Then
+      expect(result, true);
+    });
 
     tearDown(() {});
   });

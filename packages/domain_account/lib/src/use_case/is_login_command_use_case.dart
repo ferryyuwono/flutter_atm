@@ -8,7 +8,7 @@ class IsLoginCommandUseCase {
 
   static const matchCommand = "login";
   static const unrecognizedCommand = 'Unrecognized command: {0}';
-  static const missingInputParameter = 'Please input login parameter';
+  static const missingInputParameter = 'Please input login parameter: \$login [username]';
   static const tooMuchParameter = 'Login can only have 1 parameter';
 
   Future<IsLoginCommandOutput> execute(String command) async {

@@ -8,7 +8,7 @@ class IsLogoutCommandUseCase {
 
   static const matchCommand = "logout";
   static const unrecognizedCommand = 'Unrecognized command: {0}';
-  static const tooMuchParameter = 'Logout can only have 0 parameter';
+  static const tooMuchParameter = 'Logout can only have 0 parameter: \$logout';
 
   Future<IsLogoutCommandOutput> execute(String command) async {
     final trimCommand = command.trim();

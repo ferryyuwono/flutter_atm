@@ -3,24 +3,24 @@ import 'package:format/format.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable()
-class IsDepositCommandUseCase {
-  IsDepositCommandUseCase();
+class IsTransferCommandUseCase {
+  IsTransferCommandUseCase();
 
-  static const matchCommand = "deposit";
+  static const matchCommand = "transfer";
   static const unrecognizedCommand = 'Unrecognized command: {0}';
-  static const missingInputParameter = 'Please input deposit parameter';
-  static const tooMuchParameter = 'Deposit can only have 1 parameter: \$transfer [amount]';
-  static const parameterNeedToBeDecimal = 'Deposit amount can only be decimal number';
-  static const amountBiggerThanZero = 'Deposit amount need to be bigger than 0';
+  static const missingInputParameter = 'Please input transfer parameter';
+  static const tooMuchParameter = 'Transfer can only have 2 parameter: \$transfer [username] [amount]';
+  static const parameterNeedToBeDecimal = 'Transfer amount can only be decimal number';
+  static const amountBiggerThanZero = 'Transfer amount need to be bigger than 0';
 
-  Future<IsDepositCommandOutput> execute(String command) async {
+  Future<IsTransferCommandOutput> execute(String command) async {
     final trimCommand = command.trim();
     final userCommand = '\$ $trimCommand';
     final parameters = trimCommand.split(' ');
 
     final isMatchCommand = trimCommand.startsWith(matchCommand);
     if (!isMatchCommand) {
-      return IsDepositCommandOutput(
+      return IsTransferCommandOutput(
         command: userCommand,
         isMatchCommand: isMatchCommand,
         isValidCommand: false,
@@ -29,7 +29,7 @@ class IsDepositCommandUseCase {
     }
 
     if (parameters.length == 1) {
-      return IsDepositCommandOutput(
+      return IsTransferCommandOutput(
         command: userCommand,
         isMatchCommand: isMatchCommand,
         isValidCommand: false,
@@ -37,8 +37,8 @@ class IsDepositCommandUseCase {
       );
     }
 
-    if (parameters.length > 2) {
-      return IsDepositCommandOutput(
+    if (parameters.length != 3) {
+      return IsTransferCommandOutput(
         command: userCommand,
         isMatchCommand: isMatchCommand,
         isValidCommand: false,
@@ -46,12 +46,12 @@ class IsDepositCommandUseCase {
       );
     }
 
-    final parameter = parameters[1];
+    final amountText = parameters[2];
     final int amount;
     try {
-      amount = int.parse(parameter);
+      amount = int.parse(amountText);
     } catch (_) {
-      return IsDepositCommandOutput(
+      return IsTransferCommandOutput(
         command: userCommand,
         isMatchCommand: isMatchCommand,
         isValidCommand: false,
@@ -60,7 +60,7 @@ class IsDepositCommandUseCase {
     }
 
     if (amount <= 0) {
-      return IsDepositCommandOutput(
+      return IsTransferCommandOutput(
         command: userCommand,
         isMatchCommand: isMatchCommand,
         isValidCommand: false,
@@ -68,10 +68,11 @@ class IsDepositCommandUseCase {
       );
     }
 
-    return IsDepositCommandOutput(
+    return IsTransferCommandOutput(
       command: userCommand,
       isMatchCommand: isMatchCommand,
       isValidCommand: true,
+      transferTo: parameters[1],
       amount: amount,
     );
   }

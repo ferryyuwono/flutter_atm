@@ -105,7 +105,7 @@ class AccountService {
     return updatedAccount;
   }
 
-  Future<void> _updateAccount(
+  Future<bool> _updateAccount(
     AccountListData accountList,
     AccountData account,
   ) async {
@@ -113,14 +113,51 @@ class AccountService {
     accounts.removeWhere((element) => element.id == account.id);
 
     final AccountListData newAccountList = accountList.copyWith(
-        accounts: [...accounts, account ]
+      accounts: [...accounts, account ]
     );
-    await _setAccountList(newAccountList);
+    return await _setAccountList(newAccountList);
   }
 
   Future<OwedListData> getOwedList() async {
     return _sharedPreferenceClient.getObject<OwedListData>(
       key: owedKey,
+      mapper: _owedListDataMapper,
+    );
+  }
+
+  Future<bool> updateOwed(
+    OwedData owedData,
+  ) async {
+    final owedListData = await getOwedList();
+
+    final lowerCaseFrom = owedData.from?.toLowerCase();
+    final lowerCaseTo = owedData.to?.toLowerCase();
+    final owedList = owedListData.owedList?.toList(growable: true) ?? [];
+    owedList.removeWhere((element) =>
+      element.from?.toLowerCase() == lowerCaseFrom &&
+      element.to?.toLowerCase() == lowerCaseTo
+    );
+
+    final amount = owedData.amount ?? 0;
+    final OwedListData newOwedList;
+    if (amount > 0) {
+      newOwedList = owedListData.copyWith(
+        owedList: [...owedList, owedData ],
+      );
+    } else {
+      newOwedList = owedListData.copyWith(
+        owedList: owedList,
+      );
+    }
+    return await _setOwedList(newOwedList);
+  }
+
+  Future<bool> _setOwedList(
+    OwedListData owedListData,
+  ) async {
+    return _sharedPreferenceClient.setObject<OwedListData>(
+      key: owedKey,
+      object: owedListData,
       mapper: _owedListDataMapper,
     );
   }

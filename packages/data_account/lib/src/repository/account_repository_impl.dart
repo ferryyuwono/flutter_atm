@@ -1,6 +1,7 @@
 import 'package:data_account/data_account.dart';
 import 'package:data_account/src/repository/mapper/account_mapper.dart';
 import 'package:data_account/src/repository/mapper/debt_credit_mapper.dart';
+import 'package:data_account/src/repository/mapper/owed_mapper.dart';
 import 'package:domain_account/domain_account.dart';
 import 'package:injectable/injectable.dart';
 
@@ -9,6 +10,7 @@ class AccountRepositoryImpl implements AccountRepository {
   final AccountService _accountService;
   final AccountMapper _accountMapper;
   final DebtCreditMapper _debtCreditMapper;
+  final OwedMapper _owedMapper;
 
   Account loginAccount = const Account();
 
@@ -16,6 +18,7 @@ class AccountRepositoryImpl implements AccountRepository {
     this._accountService,
     this._accountMapper,
     this._debtCreditMapper,
+    this._owedMapper,
   );
 
   @override
@@ -72,11 +75,48 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
+  Future<bool> updateOwed({
+    required Owed owed
+  }) async {
+    if (owed.from.isEmpty) {
+      return false;
+    }
+
+    return await _accountService.updateOwed(
+      _owedMapper.mapToData(owed)
+    );
+  }
+
+  @override
   Future<Account> logout({
     required LogoutRequest request
   }) async {
     final account = loginAccount;
     loginAccount = const Account();
     return account;
+  }
+
+  @override
+  Future<bool> hasAccount(String username) async {
+    final response = await _accountService.getAccount(
+      username: username
+    );
+    return response.id != null;
+  }
+
+  @override
+  Future<Account> transfer({
+    required TransferRequest request
+  }) async {
+    if (request.amount == 0) {
+      return loginAccount;
+    }
+
+    await withdraw(request: WithdrawRequest(amount: request.amount));
+    await _accountService.addBalance(
+      username: request.transferTo,
+      amount: request.amount
+    );
+    return loginAccount;
   }
 }
