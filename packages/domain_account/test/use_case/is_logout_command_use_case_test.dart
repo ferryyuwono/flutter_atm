@@ -20,28 +20,8 @@ void main() {
         isMatchCommand: false,
         command: '\$ $command',
         isValidCommand: false,
-        username: '',
         messages: [
           IsLogoutCommandUseCase.unrecognizedCommand.format(command),
-        ],
-      );
-      expect(result, expected);
-    });
-    test('when execute is called and logout has no parameter, should return input parameter data', () async {
-      // Given
-      const command = 'logout';
-
-      // When
-      final result = await isLogoutCommandUseCase.execute(command);
-
-      // Then
-      const expected = IsLogoutCommandOutput(
-        isMatchCommand: true,
-        command: '\$ $command',
-        isValidCommand: false,
-        username: '',
-        messages: [
-          IsLogoutCommandUseCase.inputParameterCommand,
         ],
       );
       expect(result, expected);
@@ -58,7 +38,6 @@ void main() {
         isMatchCommand: true,
         command: '\$ $command',
         isValidCommand: false,
-        username: '',
         messages: [
           IsLogoutCommandUseCase.tooMuchParameterCommand,
         ],
@@ -67,7 +46,7 @@ void main() {
     });
     test('when execute is called and valid, should return valid data', () async {
       // Given
-      const command = 'logout mock';
+      const command = 'logout';
 
       // When
       final result = await isLogoutCommandUseCase.execute(command);
@@ -77,7 +56,6 @@ void main() {
         isMatchCommand: true,
         command: '\$ $command',
         isValidCommand: true,
-        username: 'mock',
         messages: [],
       );
       expect(result, expected);

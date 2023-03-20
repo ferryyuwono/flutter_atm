@@ -1,4 +1,3 @@
-import 'package:data/data.dart';
 import 'package:data_account/data_account.dart';
 import 'package:data_account/src/repository/account_repository_impl.dart';
 import 'package:data_account/src/repository/mapper/account_mapper.dart';
@@ -10,19 +9,17 @@ class MockAccountService extends Mock implements AccountService {}
 
 void main() {
   group('AccountRepositoryImpl', () {
-    late AccountRepositoryImpl accountRepository;
     final accountService = MockAccountService();
     final accountMapper = AccountMapper();
 
-    setUp(() {
-      accountRepository = AccountRepositoryImpl(
-        accountService,
-        accountMapper,
-      );
-    });
+    setUp(() {});
 
     test('when login is called and not found, should return data', () async {
       // Given
+      final accountRepository = AccountRepositoryImpl(
+        accountService,
+        accountMapper,
+      );
       const username = 'mock';
       const request = LoginRequest(
         username: username,
@@ -57,6 +54,10 @@ void main() {
     });
     test('when login is called, should return data', () async {
       // Given
+      final accountRepository = AccountRepositoryImpl(
+        accountService,
+        accountMapper,
+      );
       const username = 'mock';
       const request = LoginRequest(
         username: username,
@@ -88,46 +89,31 @@ void main() {
     });
     test('when hasLogin is called, should return data', () async {
       // Given
-      accountRepository.loginAccount = const Account(
-        id: 1,
-        username: 'mock',
-        balance: 0,
+      final accountRepository = AccountRepositoryImpl(
+        accountService,
+        accountMapper,
       );
 
       // When
       final result = accountRepository.hasLogin();
 
       // Then
-      expect(result, true);
+      expect(result, false);
     });
     test('when logout is called and has login, should return data', () async {
       // Given
-      const account = Account(
-        id: 1,
-        username: 'mock',
-        balance: 0,
+      final accountRepository = AccountRepositoryImpl(
+        accountService,
+        accountMapper,
       );
-      accountRepository.loginAccount = account;
 
       // When
       final result = await accountRepository.logout(
-        request: const LogoutRequest(username: 'mock')
+        request: const LogoutRequest()
       );
 
       // Then
-      expect(result, account);
-    });
-    test('when logout is called has not login, should return failed data', () async {
-      // Given
-      accountRepository.loginAccount = const Account();
-
-      // When
-      final result = await accountRepository.logout(
-          request: const LogoutRequest(username: 'mock')
-      );
-
-      // Then
-      expect(result, const Account());
+      expect(result, Account());
     });
 
     tearDown(() {});
