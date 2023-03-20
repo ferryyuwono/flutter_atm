@@ -16,7 +16,7 @@ class IsLoginCommandUseCase {
     final userCommand = '\$ $trimCommand';
     final parameters = trimCommand.split(' ');
 
-    final isMatchCommand = trimCommand.startsWith(matchCommand);
+    final isMatchCommand = trimCommand.toLowerCase().startsWith(matchCommand);
     if (!isMatchCommand) {
       return IsLoginCommandOutput(
         command: userCommand,
