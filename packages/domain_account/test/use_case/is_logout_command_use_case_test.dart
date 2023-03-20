@@ -39,7 +39,7 @@ void main() {
         command: '\$ $command',
         isValidCommand: false,
         messages: [
-          IsLogoutCommandUseCase.tooMuchParameterCommand,
+          IsLogoutCommandUseCase.tooMuchParameter,
         ],
       );
       expect(result, expected);

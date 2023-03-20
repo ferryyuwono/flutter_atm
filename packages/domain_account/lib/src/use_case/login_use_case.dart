@@ -8,7 +8,7 @@ class LoginUseCase {
   final AccountRepository _repository;
   final LoginInputMapper _inputMapper;
 
-  static const doubleLoginError = 'You have login as other user. please logout first';
+  static const doubleLoginError = 'You have login. Please logout first';
   static const helloMessage = 'Hello, {0}!';
   static const balanceMessage = 'Your balance is \${0}!';
 

@@ -12,8 +12,8 @@ class SharedPreferenceClient {
     required String key,
     required ObjectMapper<T> mapper,
   }) async {
-    final json = _prefs.getString(key);
-    return mapper.mapToObject(json);
+    final jsonString = _prefs.getString(key);
+    return mapper.mapToObject(jsonString);
   }
 
   Future<bool> setObject<T>({
@@ -21,7 +21,7 @@ class SharedPreferenceClient {
     required T object,
     required ObjectMapper<T> mapper,
   }) async {
-    final json = mapper.mapToJson(object).toString();
-    return _prefs.setString(key, json);
+    final jsonString = mapper.mapToJsonString(object);
+    return _prefs.setString(key, jsonString);
   }
 }

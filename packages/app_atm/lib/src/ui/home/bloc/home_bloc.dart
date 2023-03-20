@@ -13,14 +13,22 @@ abstract class HomeBloc extends Bloc<HomeEvent, HomeState> {
 class HomeBlocImpl extends HomeBloc {
   final LoginUseCase _loginUseCase;
   final LogoutUseCase _logoutUseCase;
+  final DepositUseCase _depositUseCase;
+  final WithdrawUseCase _withdrawUseCase;
   final IsLoginCommandUseCase _isLoginCommandUseCase;
   final IsLogoutCommandUseCase _isLogoutCommandUseCase;
+  final IsDepositCommandUseCase _isDepositCommandUseCase;
+  final IsWithdrawCommandUseCase _isWithdrawCommandUseCase;
 
   HomeBlocImpl(
     this._loginUseCase,
     this._logoutUseCase,
+    this._depositUseCase,
+    this._withdrawUseCase,
     this._isLoginCommandUseCase,
     this._isLogoutCommandUseCase,
+    this._isDepositCommandUseCase,
+    this._isWithdrawCommandUseCase,
   ) : super(HomeState()) {
     on<HomeTypeCommandEvent>(
       _onHomeTypeCommandEvent,
@@ -45,6 +53,18 @@ class HomeBlocImpl extends HomeBloc {
     final isLoginCommandOutput = await _isLoginCommandUseCase.execute(event.command);
     if (isLoginCommandOutput.isMatchCommand) {
       await _handleLoginCommand(emit: emit, output: isLoginCommandOutput);
+      return;
+    }
+
+    final isDepositCommandOutput = await _isDepositCommandUseCase.execute(event.command);
+    if (isDepositCommandOutput.isMatchCommand) {
+      await _handleDepositCommand(emit: emit, output: isDepositCommandOutput);
+      return;
+    }
+
+    final isWithdrawCommandOutput = await _isWithdrawCommandUseCase.execute(event.command);
+    if (isWithdrawCommandOutput.isMatchCommand) {
+      await _handleWithdrawCommand(emit: emit, output: isWithdrawCommandOutput);
       return;
     }
 
@@ -126,6 +146,74 @@ class HomeBlocImpl extends HomeBloc {
     required LogoutInput request,
   }) async {
     final output = await _logoutUseCase.execute(request);
+    emit(state.copyWith(
+      logList: [...state.logList, ...output.messages],
+      isLoading: false,
+    ));
+  }
+
+  Future<void> _handleDepositCommand({
+    required Emitter<HomeState> emit,
+    required IsDepositCommandOutput output,
+  }) async {
+    if (!output.isValidCommand) {
+      emit(state.copyWith(
+        typedCommand: '',
+        logList: [...state.logList, output.command, ...output.messages],
+      ));
+      return;
+    }
+
+    emit(state.copyWith(
+      typedCommand: '',
+      logList: [...state.logList, output.command],
+      isLoading: true,
+    ));
+    await _deposit(
+      emit: emit,
+      request: DepositInput(amount: output.amount),
+    );
+  }
+
+  Future<void> _deposit({
+    required Emitter<HomeState> emit,
+    required DepositInput request,
+  }) async {
+    final output = await _depositUseCase.execute(request);
+    emit(state.copyWith(
+      logList: [...state.logList, ...output.messages],
+      isLoading: false,
+    ));
+  }
+
+  Future<void> _handleWithdrawCommand({
+    required Emitter<HomeState> emit,
+    required IsWithdrawCommandOutput output,
+  }) async {
+    if (!output.isValidCommand) {
+      emit(state.copyWith(
+        typedCommand: '',
+        logList: [...state.logList, output.command, ...output.messages],
+      ));
+      return;
+    }
+
+    emit(state.copyWith(
+      typedCommand: '',
+      logList: [...state.logList, output.command],
+      isLoading: true,
+    ));
+    await _withdraw(
+      emit: emit,
+      request: WithdrawInput(amount: output.amount),
+    );
+  }
+
+  Future<void> _withdraw({
+    required Emitter<HomeState> emit,
+    required WithdrawInput request,
+  }) async {
+    final output = await _withdrawUseCase.execute(request);
     emit(state.copyWith(
       logList: [...state.logList, ...output.messages],
       isLoading: false,

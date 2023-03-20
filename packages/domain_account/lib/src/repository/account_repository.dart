@@ -6,6 +6,15 @@ abstract class AccountRepository {
   });
 
   bool hasLogin();
+  Account getLoginAccount();
+
+  Future<Account> deposit({
+    required DepositRequest request
+  });
+
+  Future<Account> withdraw({
+    required WithdrawRequest request
+  });
 
   Future<Account> logout({
     required LogoutRequest request

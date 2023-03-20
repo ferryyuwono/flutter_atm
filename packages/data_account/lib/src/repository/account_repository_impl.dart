@@ -34,6 +34,33 @@ class AccountRepositoryImpl implements AccountRepository {
   bool hasLogin() => loginAccount.id > 0;
 
   @override
+  Account getLoginAccount() => loginAccount;
+
+  @override
+  Future<Account> deposit({
+    required DepositRequest request
+  }) async {
+    final account = await _accountService.addBalance(
+      username: loginAccount.username,
+      amount: request.amount
+    );
+    loginAccount = _accountMapper.map(account);
+    return loginAccount;
+  }
+
+  @override
+  Future<Account> withdraw({
+    required WithdrawRequest request
+  }) async {
+    final account = await _accountService.addBalance(
+        username: loginAccount.username,
+        amount: -request.amount
+    );
+    loginAccount = _accountMapper.map(account);
+    return loginAccount;
+  }
+
+  @override
   Future<Account> logout({
     required LogoutRequest request
   }) async {
